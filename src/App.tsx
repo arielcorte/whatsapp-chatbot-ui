@@ -7,7 +7,7 @@ import { Button } from "./components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { cn } from "./lib/utils";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://4.228.10.215:3000");
 
 function App() {
   const [connected, setConnected] = useState<boolean>();
