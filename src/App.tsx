@@ -82,7 +82,7 @@ function App() {
   return (
     <main className="bg-green-100 h-dscreen overflow-hidden flex flex-col">
       <h1 className="text-3xl font-bold p-4 bg-green-400 text-white">
-        ChatsApp
+        ChatsAppAI
       </h1>
       <div className="flex flex-col gap-4 justify-center items-center grow p-8">
         <p className="w-full max-w-sm">
