@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "./components/ui/select";
 
-const socket = io("http://localhost:3001");
+const socket = io("http://20.226.57.246");
 
 function App() {
   const [apiState, setApiState] = useState<string>();
