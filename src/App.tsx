@@ -75,7 +75,10 @@ function App() {
     };
   }, []);
 
-  function createClient(input: HTMLInputElement | null, api: string) {
+  function createClient(
+    input: HTMLInputElement | null,
+    api: string | undefined
+  ) {
     if (!input) return;
     const userId = input.value;
     socket.emit("new-client", { userId, api });
@@ -135,7 +138,7 @@ function App() {
           </div>
           <div className="flex gap-2">
             <Button
-              onClick={() => createClient(userIdRef.current)}
+              onClick={() => createClient(userIdRef.current, apiState)}
               disabled={!connected}
             >
               Create Client
