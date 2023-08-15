@@ -7,16 +7,25 @@ import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { cn } from "./lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select";
 
-const socket = io("http://20.226.57.246");
+const socket = io("http://localhost:3001");
 
 function App() {
+  const [apiState, setApiState] = useState<string>();
   const [connected, setConnected] = useState<boolean>();
   const [qrCode, setQrCode] = useState<string | undefined>();
   const [showQr, setShowQr] = useState<boolean>(false);
   const [ready, setReady] = useState<boolean>(false);
 
   const userIdRef = useRef<HTMLInputElement>(null);
+  const apiRef = useRef<HTMLSelectElement>(null);
 
   useEffect(() => {
     function onConnect() {
@@ -66,10 +75,10 @@ function App() {
     };
   }, []);
 
-  function createClient(input: HTMLInputElement | null) {
+  function createClient(input: HTMLInputElement | null, api: string) {
     if (!input) return;
     const userId = input.value;
-    socket.emit("new-client", userId);
+    socket.emit("new-client", { userId, api });
   }
 
   function deleteClient(input: HTMLInputElement | null) {
@@ -108,6 +117,21 @@ function App() {
               ref={userIdRef}
               disabled={!connected}
             />
+          </div>
+          <div className="w-full max-w-sm">
+            <Label htmlFor="api">API</Label>
+            <Select
+              disabled={!connected}
+              onValueChange={(value) => setApiState(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="API" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="chatsapp">ChatsappAI</SelectItem>
+                <SelectItem value="umma">Umma</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex gap-2">
             <Button
