@@ -25,7 +25,6 @@ function App() {
   const [ready, setReady] = useState<boolean>(false);
 
   const userIdRef = useRef<HTMLInputElement>(null);
-  const apiRef = useRef<HTMLSelectElement>(null);
 
   useEffect(() => {
     function onConnect() {
