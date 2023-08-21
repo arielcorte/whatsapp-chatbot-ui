@@ -8,11 +8,9 @@ import { Button } from "./components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { cn } from "./lib/utils";
 
-const socket = io("http://localhost:3000");
+const socket = io("http://20.226.57.246");
 
 function App() {
-  const [apiUrl, setApiUrl] = useState<string>();
-  const [apiKey, setApiKey] = useState<string>();
   const [connected, setConnected] = useState<boolean>();
   const [qrCode, setQrCode] = useState<string | undefined>();
   const [showQr, setShowQr] = useState<boolean>(false);
