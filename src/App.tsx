@@ -7,24 +7,20 @@ import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { cn } from "./lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./components/ui/select";
 
-const socket = io("http://20.226.57.246");
+const socket = io("http://localhost:3000");
 
 function App() {
-  const [apiState, setApiState] = useState<string>();
+  const [apiUrl, setApiUrl] = useState<string>();
+  const [apiKey, setApiKey] = useState<string>();
   const [connected, setConnected] = useState<boolean>();
   const [qrCode, setQrCode] = useState<string | undefined>();
   const [showQr, setShowQr] = useState<boolean>(false);
   const [ready, setReady] = useState<boolean>(false);
 
   const userIdRef = useRef<HTMLInputElement>(null);
+  const apiUrlRef = useRef<HTMLInputElement>(null);
+  const apiKeyRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function onConnect() {
@@ -74,13 +70,8 @@ function App() {
     };
   }, []);
 
-  function createClient(
-    input: HTMLInputElement | null,
-    api: string | undefined
-  ) {
-    if (!input) return;
-    const userId = input.value;
-    socket.emit("new-client", { userId, api });
+  function createClient(userId: string, api: string, key: string) {
+    socket.emit("new-client", { userId, api, key });
   }
 
   function deleteClient(input: HTMLInputElement | null) {
@@ -104,53 +95,72 @@ function App() {
         <h1 className="text-3xl font-bold p-4 bg-green-400 text-white">
           ChatsappAI
         </h1>
-        <div className="flex flex-col gap-4 justify-center items-center grow p-8">
-          <p className="w-full max-w-sm">
-            Connection status:{" "}
-            <span className={cn(connected ? "text-green-500" : "text-red-500")}>
-              {connected ? "Connected" : "Disconnected"}
-            </span>
-          </p>
-          <div className="w-full max-w-sm">
-            <Label htmlFor="userId">User ID</Label>
-            <Input
-              id="userId"
-              placeholder="+549351..."
-              ref={userIdRef}
-              disabled={!connected}
-            />
+        <section className="flex gap-8 items-center grow p-8">
+          <div className="flex flex-col gap-4 justify-center items-center grow">
+            <p className="w-full max-w-sm">
+              Connection status:{" "}
+              <span
+                className={cn(connected ? "text-green-500" : "text-red-500")}
+              >
+                {connected ? "Connected" : "Disconnected"}
+              </span>
+            </p>
+            <div className="w-full max-w-sm">
+              <Label htmlFor="userId">User ID</Label>
+              <Input
+                id="userId"
+                placeholder="+549351..."
+                ref={userIdRef}
+                disabled={!connected}
+              />
+            </div>
+            <div className="w-full max-w-sm">
+              <Label htmlFor="api">API</Label>
+              <Input
+                id="api"
+                placeholder="+549351..."
+                ref={apiUrlRef}
+                disabled={!connected}
+              />
+            </div>
+            <div className="w-full max-w-sm">
+              <Label htmlFor="key">Key</Label>
+              <Input
+                id="Key"
+                placeholder="+549351..."
+                ref={apiKeyRef}
+                disabled={!connected}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  if (
+                    userIdRef.current &&
+                    apiUrlRef.current &&
+                    apiKeyRef.current
+                  ) {
+                    createClient(
+                      userIdRef.current.value,
+                      apiUrlRef.current.value,
+                      apiKeyRef.current.value
+                    );
+                  }
+                }}
+                disabled={!connected}
+              >
+                Create Client
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => deleteClient(userIdRef.current)}
+                disabled={!connected}
+              >
+                Delete Client
+              </Button>
+            </div>
           </div>
-          <div className="w-full max-w-sm">
-            <Label htmlFor="api">API</Label>
-            <Select
-              disabled={!connected}
-              onValueChange={(value) => setApiState(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="API" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="chatsapp">ChatsappAI</SelectItem>
-                <SelectItem value="umma">Umma</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => createClient(userIdRef.current, apiState)}
-              disabled={!connected}
-            >
-              Create Client
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => deleteClient(userIdRef.current)}
-              disabled={!connected}
-            >
-              Delete Client
-            </Button>
-          </div>
-          <div className="flex items-center justify-center grow aspect-square bg-slate-50 rounded-sm border p-6">
+          <div className="flex items-center justify-center grow aspect-square bg-slate-50 rounded-sm border p-6 max-w-md">
             {showQr ? (
               qrCode ? (
                 <QRCode value={qrCode} className="w-full h-full" />
@@ -166,7 +176,7 @@ function App() {
               <div></div>
             )}
           </div>
-        </div>
+        </section>
       </main>
     </>
   );
