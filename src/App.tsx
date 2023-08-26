@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { cn } from "./lib/utils";
 
 const socket = io("http://20.206.187.74:6543");
 
